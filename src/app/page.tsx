@@ -23,7 +23,8 @@ import {
   Download,
   CheckCircle,
   HelpCircle,
-  ArrowRight
+  ArrowRight,
+  Bell
 } from "lucide-react";
 
 // Types
@@ -552,16 +553,26 @@ export default function TicketScannerPage() {
             </span>
           </div>
 
-          {/* Flash Button / Ellipse 76 (Figma: width 33px, height 33px, left 346px, top 21px) */}
-          <button
-            onClick={toggleFlash}
-            className={`w-[33px] h-[33px] rounded-full flex items-center justify-center transition-colors duration-200 mt-1 cursor-pointer ${
-              flashOn ? "bg-[#5331EA] text-white" : "bg-[#D9D9D9] text-[#2F2F2F] hover:bg-gray-300"
-            }`}
-            title="Toggle Flash"
-          >
-            {flashOn ? <Zap className="w-4.5 h-4.5" /> : <ZapOff className="w-4.5 h-4.5" />}
-          </button>
+          {/* Flash Button / Bell Notification Button / Ellipse 76 */}
+          {activeTab === "scanner" ? (
+            <button
+              onClick={toggleFlash}
+              className={`w-[33px] h-[33px] rounded-full flex items-center justify-center transition-colors duration-200 mt-1 cursor-pointer ${
+                flashOn ? "bg-[#5331EA] text-white" : "bg-[#D9D9D9] text-[#2F2F2F] hover:bg-gray-300"
+              }`}
+              title="Toggle Flash"
+            >
+              {flashOn ? <Zap className="w-4.5 h-4.5" /> : <ZapOff className="w-4.5 h-4.5" />}
+            </button>
+          ) : (
+            <button
+              onClick={() => alert("No new notifications.")}
+              className="w-[33px] h-[33px] rounded-full bg-[#D9D9D9] text-black flex items-center justify-center hover:bg-gray-300 transition-colors duration-200 mt-1 cursor-pointer"
+              title="Notifications"
+            >
+              <Bell className="w-4 h-4 text-black" />
+            </button>
+          )}
         </header>
 
         {/* Main Tabs Body (Camera Stream or Stats/Profile Dashboard) */}
@@ -746,113 +757,95 @@ export default function TicketScannerPage() {
 
           {/* TAB 2: HOME VIEW (Dashboard Statistics & Scan Logs) */}
           {activeTab === "home" && (
-            <div className="w-full h-full flex flex-col p-5 space-y-4 overflow-y-auto">
-              
-              {/* Header block */}
-              <div>
-                <h2 className="text-[22px] font-black text-black leading-none">Gate Entry Stats</h2>
-                <p className="text-gray-400 text-xs mt-1 font-medium">Session: The Ocean Symphony Concert</p>
+            <div 
+              className="w-full h-full flex flex-col px-6 py-5 overflow-y-auto font-[family-name:var(--font-anek-latin)]"
+              style={{ background: "linear-gradient(360deg, #AC9BF7 -134.32%, #FFFFFF 47.71%)" }}
+            >
+              {/* Greetings */}
+              <div className="mt-2.5 mb-5 space-y-1">
+                <h2 className="text-[22px] font-semibold text-black leading-tight">Good Evening, Organizer</h2>
+                <p className="text-[12px] font-medium text-[#686868] leading-tight">Here's what's happening with your event</p>
               </div>
 
-              {/* Progress Summary Card */}
-              <div className="bg-white rounded-[24px] border border-[#EBEBEB] p-5 shadow-sm space-y-3.5">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">Check-in Progress</span>
-                  <span className="text-[#5331EA] font-extrabold text-sm bg-[#5331EA]/10 px-2.5 py-0.5 rounded-full">
-                    {Math.round((stats.totalCheckedIn / stats.totalBooked) * 100)}% Complete
-                  </span>
-                </div>
+              {/* Event Cards List */}
+              <div className="flex-grow space-y-6 pb-6">
+                {[
+                  {
+                    id: "E-1001",
+                    name: "The Ocean Symphony",
+                    status: "live",
+                    date: "15 Jun",
+                    time: "08:30 PM",
+                    attendees: stats.totalCheckedIn,
+                  },
+                  {
+                    id: "E-1002",
+                    name: "Sunset House DJ Party",
+                    status: "closed",
+                    date: "15 Jun",
+                    time: "06:00 PM",
+                    attendees: 42,
+                  },
+                  {
+                    id: "E-1003",
+                    name: "Global Comedy Festival",
+                    status: "live",
+                    date: "16 Jun",
+                    time: "07:00 PM",
+                    attendees: 29,
+                  },
+                  {
+                    id: "E-1004",
+                    name: "Bollywood Retro Night",
+                    status: "live",
+                    date: "18 Jun",
+                    time: "09:00 PM",
+                    attendees: 8,
+                  }
+                ].map((event, idx) => (
+                  <div 
+                    key={idx} 
+                    className="w-full h-[119px] bg-[#F5F5F5] rounded-[15px] flex items-center overflow-hidden border border-gray-100 shadow-sm relative transition-transform hover:scale-[1.01]"
+                  >
+                    {/* Left Lavender Thumbnail */}
+                    <div className="w-[89px] h-full bg-[#BDB1F3] rounded-[15px] shrink-0" />
 
-                {/* Bar representation */}
-                <div className="w-full bg-[#EBF0F9] h-3 rounded-full overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-[#AC9BF7] to-[#5331EA] h-full rounded-full transition-all duration-500"
-                    style={{ width: `${(stats.totalCheckedIn / stats.totalBooked) * 100}%` }}
-                  />
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 text-center pt-2">
-                  <div className="border-r border-gray-100">
-                    <p className="text-[20px] font-black text-black leading-none">{stats.totalCheckedIn}</p>
-                    <p className="text-green-600 text-[10px] font-bold uppercase tracking-wider mt-1.5">Checked In</p>
-                  </div>
-                  <div className="border-r border-gray-100">
-                    <p className="text-[20px] font-black text-black leading-none">{stats.totalBooked - stats.totalCheckedIn}</p>
-                    <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-1.5">Remaining</p>
-                  </div>
-                  <div>
-                    <p className="text-[20px] font-black text-black leading-none">{stats.cancelledTickets}</p>
-                    <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider mt-1.5">Cancelled</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Active Scanner Status Indicator */}
-              <div className="bg-white rounded-2xl border border-[#EBEBEB] py-3.5 px-5 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                  </span>
-                  <div>
-                    <p className="text-xs font-bold text-black leading-none">Gate Scanner Device Active</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">Connected to security mainframe</p>
-                  </div>
-                </div>
-                <button
-                  onClick={handleResetSession}
-                  className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-500 rounded-lg hover:text-black transition-colors cursor-pointer"
-                  title="Reset statistics"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Recent Scan History logs stream */}
-              <div className="flex-grow flex flex-col space-y-2.5 min-h-[250px]">
-                <h3 className="font-bold text-sm text-black flex items-center justify-between px-1">
-                  <span>Recent Scan Feed</span>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{recentScans.length} Scans</span>
-                </h3>
-
-                <div className="flex-grow overflow-y-auto space-y-2.5 pr-0.5">
-                  {recentScans.map((scan, i) => (
-                    <div key={i} className="bg-white rounded-[16px] border border-[#F2F2F2] p-3 flex items-center justify-between hover:border-[#EBF0F9] transition-all">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                          scan.status === "success" 
-                            ? "bg-green-50 text-green-500" 
-                            : scan.status === "duplicate" 
-                              ? "bg-amber-50 text-amber-500" 
-                              : "bg-red-50 text-red-500"
-                        }`}>
-                          {scan.status === "success" && <Check className="w-4.5 h-4.5" />}
-                          {scan.status === "duplicate" && <AlertTriangle className="w-4.5 h-4.5" />}
-                          {scan.status === "cancelled" && <XCircle className="w-4.5 h-4.5" />}
-                        </div>
-                        <div>
-                          <p className="text-xs font-black text-black leading-tight">{scan.userName}</p>
-                          <p className="text-[10px] text-[#686868] mt-0.5">{scan.category} • <span className="font-mono">{scan.id}</span></p>
-                        </div>
-                      </div>
+                    {/* Right Details Section */}
+                    <div className="flex-grow h-full py-3 px-3.5 flex flex-col justify-between min-w-0">
                       
-                      <div className="text-right">
-                        <span className="text-[10px] text-gray-400 font-bold block">{scan.time}</span>
-                        <span className={`text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full mt-1 inline-block ${
-                          scan.status === "success" 
-                            ? "bg-green-100 text-green-700" 
-                            : scan.status === "duplicate" 
-                              ? "bg-amber-100 text-amber-700" 
-                              : "bg-red-100 text-red-700"
-                        }`}>
-                          {scan.status === "success" && "Verified"}
-                          {scan.status === "duplicate" && "Duplicate"}
-                          {scan.status === "cancelled" && "Cancelled"}
-                        </span>
+                      {/* Top Row: Status Badge */}
+                      <div>
+                        {event.status === "live" ? (
+                          <span className="inline-block bg-[#D6FAE5] text-[#009133] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-[5px]">
+                            LIVE
+                          </span>
+                        ) : (
+                          <span className="inline-block bg-[rgba(237,77,27,0.25)] text-[#ED4D1B] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-[5px]">
+                            CLOSED
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Event Name */}
+                      <h3 className="font-bold text-[18px] text-black leading-tight truncate">
+                        {event.name}
+                      </h3>
+
+                      {/* Date & Time */}
+                      <div className="text-[12px] font-medium text-[#686868] leading-none">
+                        {event.date} &nbsp; {event.time} onwards
+                      </div>
+
+                      {/* Divider line */}
+                      <div className="w-full border-t border-[#686868]/30 my-0.5" />
+
+                      {/* Attendees Count */}
+                      <div className="text-[12px] font-medium text-black leading-none flex items-center gap-1">
+                        <span className="font-bold">{event.attendees}</span> attendees
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
