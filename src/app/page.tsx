@@ -524,7 +524,14 @@ export default function TicketScannerPage() {
     <div className="fixed inset-0 bg-[#0E0B1F] flex items-center justify-center p-0 md:p-4 select-none font-[family-name:var(--font-anek-latin)] overflow-hidden">
       
       {/* Container Bezel Box (iPhone dimensions on desktop, full screen on mobile) */}
-      <div className="w-full h-full md:relative md:w-[380px] md:h-[820px] md:max-h-[90vh] bg-white rounded-none md:rounded-[40px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border-0 md:border-8 border-[#201D30] overflow-hidden flex flex-col transition-all duration-300 scanner-phone-card">
+      <div 
+        className="w-full h-full md:relative md:w-[380px] md:h-[820px] md:max-h-[90vh] rounded-none md:rounded-[40px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border-0 md:border-8 border-[#201D30] overflow-hidden flex flex-col transition-all duration-300 scanner-phone-card"
+        style={{
+          background: activeTab === "home" 
+            ? "linear-gradient(360deg, #AC9BF7 -134.32%, #FFFFFF 47.71%)" 
+            : "white"
+        }}
+      >
         
         {/* Notch / Speaker representation on Desktop */}
         <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[24px] bg-[#201D30] rounded-b-[16px] z-50">
@@ -595,7 +602,9 @@ export default function TicketScannerPage() {
         </header>
 
         {/* Main Tabs Body (Camera Stream or Stats/Profile Dashboard) */}
-        <main className="flex-grow relative bg-[#F5F7FB] overflow-hidden flex flex-col">
+        <main className={`flex-grow relative overflow-hidden flex flex-col ${
+          activeTab === "home" ? "bg-transparent" : "bg-[#F5F7FB]"
+        }`}>
           
           {/* TAB 1: SCANNER VIEW (Live Camera or Manual Keyboard Interface) */}
           {activeTab === "scanner" && (
@@ -766,8 +775,7 @@ export default function TicketScannerPage() {
           {/* TAB 2: HOME VIEW (Dashboard Statistics & Scan Logs) */}
           {activeTab === "home" && (
             <div 
-              className="w-full h-full flex flex-col px-6 py-5 overflow-y-auto font-[family-name:var(--font-anek-latin)]"
-              style={{ background: "linear-gradient(360deg, #AC9BF7 -134.32%, #FFFFFF 47.71%)" }}
+              className="w-full h-full flex flex-col px-6 py-5 overflow-y-auto font-[family-name:var(--font-anek-latin)] bg-transparent"
             >
               {/* Greetings */}
               <div className="mt-2.5 mb-5 space-y-1">
@@ -1114,7 +1122,11 @@ export default function TicketScannerPage() {
         )}
 
         {/* Bottom Navigation Bar (Figma spec heights: home, scanner, profile top 795px to bottom 874px = 79px) */}
-        <footer className="h-[79px] w-full bg-white border-t border-[#F0F0F0] grid grid-cols-3 shrink-0 relative z-40">
+        <footer className={`h-[79px] w-full grid grid-cols-3 shrink-0 relative z-40 ${
+          activeTab === "home" 
+            ? "bg-transparent border-t border-[#686868]/60" 
+            : "bg-white border-t border-[#F0F0F0]"
+        }`}>
           
           {/* TAB 1: Home Button (Figma: Label left 30px, top 829px; Icon left 38px, top 795px) */}
           <button
