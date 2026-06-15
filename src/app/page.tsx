@@ -187,7 +187,7 @@ export default function TicketScannerPage() {
   const [jsQRLoaded, setJsQRLoaded] = useState(false);
   useEffect(() => {
     if (typeof window === "undefined") return;
-    
+
     // Check if script is already present
     if ((window as any).jsQR) {
       setJsQRLoaded(true);
@@ -268,7 +268,7 @@ export default function TicketScannerPage() {
     if (!streamRef.current) return;
     const track = streamRef.current.getVideoTracks()[0];
     if (!track) return;
-    
+
     try {
       const capabilities = track.getCapabilities() as any;
       if (capabilities.torch) {
@@ -303,10 +303,10 @@ export default function TicketScannerPage() {
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          
+
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const jsQR = (window as any).jsQR;
-          
+
           if (jsQR) {
             const code = jsQR(imageData.data, imageData.width, imageData.height, {
               inversionAttempts: "dontInvert"
@@ -351,7 +351,7 @@ export default function TicketScannerPage() {
       const response = await fetch(`${backendUrl}/api/bookings/public/${ticketId}`);
       if (response.ok) {
         const data = await response.json();
-        
+
         // Map backend booking details to local ticket view format
         const ticket: ScannedTicket = {
           id: data.id || ticketId,
@@ -508,7 +508,7 @@ export default function TicketScannerPage() {
     setScannedTicket(null);
     setManualCode("");
     setManualEntryOpen(false);
-    
+
     // Resume camera scanning if on the scanner tab
     if (activeTab === "scanner") {
       startCamera();
@@ -525,7 +525,7 @@ export default function TicketScannerPage() {
           delete MOCK_DATABASE[key].checkInTime;
         }
       });
-      
+
       // Keep T-1002 as checked_in for demo
       MOCK_DATABASE["T-1002"].status = "checked_in";
       MOCK_DATABASE["T-1002"].checkInTime = "09:35 PM";
@@ -539,7 +539,7 @@ export default function TicketScannerPage() {
       setRecentScans([
         { id: "T-1002", userName: "Karan Johar", category: "General Entry", time: "09:35 PM", status: "duplicate" }
       ]);
-      
+
       playSound("info");
       alert("Scanner session statistics reset successfully.");
     }
@@ -555,24 +555,24 @@ export default function TicketScannerPage() {
 
   return (
     <div className="fixed inset-0 bg-[#0E0B1F] flex items-center justify-center p-0 md:p-4 select-none font-[family-name:var(--font-anek-latin)] overflow-hidden">
-      
+
       {/* Container Bezel Box (iPhone dimensions on desktop, full screen on mobile) */}
-      <div 
+      <div
         className="w-full h-full md:relative md:w-[380px] md:h-[820px] md:max-h-[90vh] rounded-none md:rounded-[40px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border-0 md:border-8 border-[#201D30] overflow-hidden flex flex-col transition-all duration-300 scanner-phone-card"
         style={{
           background: (activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null))
-            ? "linear-gradient(360deg, #AC9BF7 -134.32%, #FFFFFF 47.71%)" 
+            ? "linear-gradient(360deg, #AC9BF7 -134.32%, #FFFFFF 47.71%)"
             : "white"
         }}
       >
-        
+
         {/* Notch / Speaker representation on Desktop */}
         <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[24px] bg-[#201D30] rounded-b-[16px] z-50">
           <div className="w-10 h-1 bg-[#49455B] rounded-full mx-auto mt-1" />
         </div>
 
         {/* Top Header Section (Figma: Wordmark Top 27px, Left 25px; Lightning Top 21px, Left 346px) */}
-        <header className="h-[77px] w-full bg-white border-b border-[#F0F0F0] flex items-center justify-between px-6 shrink-0 relative z-40">
+        <header className="h-[77px] w-full bg-white border-b border-[#686868] flex items-center justify-between px-6 shrink-0 relative z-40">
           {/* Logo (Figma: Wordmark PNG 1.png at left 25px, top 27px) */}
           <div className="flex items-center gap-1.5 mt-2">
             <img
@@ -591,8 +591,8 @@ export default function TicketScannerPage() {
             </span>
           </div>
 
-          {/* Flash Button / Bell Notification Button / Ellipse 76 */}
-          {(activeTab === "scanner" && scannedTicket === null) ? (
+          {/* Flash Button / Ellipse 76 */}
+          {activeTab === "scanner" && scannedTicket === null && (
             <button
               onClick={toggleFlash}
               className={`w-[33px] h-[33px] rounded-full flex items-center justify-center transition-colors duration-200 mt-1 cursor-pointer ${
@@ -600,64 +600,52 @@ export default function TicketScannerPage() {
               }`}
               title="Toggle Flash"
             >
-              <svg 
-                width="21" 
-                height="21" 
-                viewBox="0 0 21 21" 
-                fill="none" 
+              <svg
+                width="21"
+                height="21"
+                viewBox="0 0 21 21"
+                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-[18px] h-[18px]"
               >
                 <g clipPath="url(#clip0_990_1899)">
-                  <path 
-                    d="M17.7014 9.69378C17.6768 9.58874 17.6266 9.49141 17.5553 9.41039C17.4841 9.32937 17.394 9.26716 17.293 9.22927L12.5655 7.45646L13.7685 1.44119C13.7965 1.30118 13.7781 1.15586 13.716 1.02727C13.654 0.89868 13.5517 0.793839 13.4246 0.728648C13.2976 0.663457 13.1528 0.641473 13.0121 0.66603C12.8715 0.690587 12.7427 0.760345 12.6452 0.864724L3.45775 10.7085C3.38413 10.7873 3.3311 10.8832 3.30334 10.9874C3.27558 11.0917 3.27396 11.2012 3.29861 11.3062C3.32327 11.4112 3.37344 11.5086 3.44469 11.5896C3.51594 11.6706 3.60606 11.7328 3.70709 11.7707L8.43458 13.5435L7.23151 19.5588C7.2035 19.6988 7.22191 19.8441 7.28397 19.9727C7.34603 20.1013 7.44833 20.2062 7.57537 20.2714C7.70241 20.3366 7.84724 20.3586 7.9879 20.334C8.12856 20.3094 8.25737 20.2397 8.35479 20.1353L17.5423 10.2915C17.6159 10.2126 17.6689 10.1168 17.6967 10.0126C17.7245 9.90831 17.7261 9.79882 17.7014 9.69378Z" 
+                  <path
+                    d="M17.7014 9.69378C17.6768 9.58874 17.6266 9.49141 17.5553 9.41039C17.4841 9.32937 17.394 9.26716 17.293 9.22927L12.5655 7.45646L13.7685 1.44119C13.7965 1.30118 13.7781 1.15586 13.716 1.02727C13.654 0.89868 13.5517 0.793839 13.4246 0.728648C13.2976 0.663457 13.1528 0.641473 13.0121 0.66603C12.8715 0.690587 12.7427 0.760345 12.6452 0.864724L3.45775 10.7085C3.38413 10.7873 3.3311 10.8832 3.30334 10.9874C3.27558 11.0917 3.27396 11.2012 3.29861 11.3062C3.32327 11.4112 3.37344 11.5086 3.44469 11.5896C3.51594 11.6706 3.60606 11.7328 3.70709 11.7707L8.43458 13.5435L7.23151 19.5588C7.2035 19.6988 7.22191 19.8441 7.28397 19.9727C7.34603 20.1013 7.44833 20.2062 7.57537 20.2714C7.70241 20.3366 7.84724 20.3586 7.9879 20.334C8.12856 20.3094 8.25737 20.2397 8.35479 20.1353L17.5423 10.2915C17.6159 10.2126 17.6689 10.1168 17.6967 10.0126C17.7245 9.90831 17.7261 9.79882 17.7014 9.69378Z"
                     fill="currentColor"
                   />
                 </g>
                 <defs>
                   <clipPath id="clip0_990_1899">
-                    <rect width="21" height="21" fill="white"/>
+                    <rect width="21" height="21" fill="white" />
                   </clipPath>
                 </defs>
-              </svg>
-            </button>
-          ) : (
-            <button
-              onClick={() => alert("No new notifications.")}
-              className="w-[33px] h-[33px] rounded-full bg-[#D9D9D9] text-black flex items-center justify-center hover:bg-gray-300 transition-colors duration-200 mt-1 cursor-pointer"
-              title="Notifications"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-[18px] h-[18px]">
-                <path d="M13.1639 19.085C13.6612 19.0997 14.1495 19.221 14.5953 19.4406H14.6221C14.9946 19.7445 15.0578 20.2868 14.7653 20.6673C14.2325 21.4297 13.3801 21.9104 12.4482 21.974C11.4907 22.0882 10.5265 21.8231 9.76425 21.2362C9.37223 20.9674 9.11748 20.5423 9.06643 20.0717C9.06643 19.5739 9.53164 19.3428 9.96107 19.245C10.464 19.1391 10.9767 19.0855 11.4909 19.085H13.1639ZM12.0366 2C15.1321 2 18.3259 4.24008 18.6569 7.48463C18.7106 8.15132 18.6569 8.84468 18.7106 9.52026C18.8862 10.3915 19.2906 11.2011 19.8826 11.867C20.2506 12.4143 20.4638 13.0498 20.4999 13.7071V13.9115C20.5054 14.7984 20.1876 15.6573 19.6052 16.3294C18.8671 17.1186 17.8657 17.6145 16.7871 17.725C13.6005 18.1339 10.3743 18.1339 7.1877 17.725C6.09645 17.6229 5.0809 17.1263 4.33382 16.3294C3.76973 15.6508 3.47393 14.7912 3.50181 13.9115V13.7071C3.53672 13.0523 3.74336 12.4179 4.10121 11.867C4.69585 11.2005 5.10588 10.3918 5.29107 9.52026C5.34475 8.84468 5.29107 8.16021 5.34475 7.48463C5.68471 4.24008 8.81593 2 11.9472 2H12.0366Z" fill="black"/>
               </svg>
             </button>
           )}
         </header>
 
         {/* Main Tabs Body (Camera Stream or Stats/Profile Dashboard) */}
-        <main className={`flex-grow relative overflow-hidden flex flex-col ${
-          (activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null)) ? "bg-transparent" : "bg-[#F5F7FB]"
-        }`}>
-          
+        <main className={`flex-grow relative overflow-hidden flex flex-col ${(activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null)) ? "bg-transparent" : "bg-[#F5F7FB]"
+          }`}>
+
           {/* TAB 1: SCANNER VIEW (Live Camera or Manual Keyboard Interface) */}
           {activeTab === "scanner" && (
-            <div className={`w-full h-full relative flex flex-col justify-between ${
-              scannedTicket ? "bg-transparent" : "bg-black"
-            }`}>
-              
+            <div className={`w-full h-full relative flex flex-col justify-between ${scannedTicket ? "bg-transparent" : "bg-black"
+              }`}>
+
               {scannedTicket ? (
                 /* NEW AFTER-SCAN SCREEN */
                 <div className="flex-grow w-full px-6 py-4 flex flex-col justify-between overflow-hidden font-[family-name:var(--font-anek-latin)] h-full">
-                  
+
                   {/* Rectangle 561: Ticket Details Card */}
-                  <div className="bg-white rounded-[10px] border border-[#686868]/30 p-4 space-y-3 shadow-sm relative mt-2 w-full max-w-[352px] mx-auto shrink-0">
-                    
+                  <div className="bg-white rounded-[10px] border border-[#686868]/30 p-4 space-y-3 relative mt-2 w-full max-w-[352px] mx-auto shrink-0">
+
 
                     {/* Card Header: Avatar & Name */}
                     <div className="flex items-center gap-3.5">
                       {/* Ellipse 77: Avatar Placeholder */}
                       <div className="w-[63px] h-[63px] bg-[#D9D9D9] rounded-full shrink-0" />
-                      
+
                       <div className="min-w-0 flex-grow">
                         <h3 className="font-semibold text-[18px] text-black leading-tight truncate font-sans">
                           {scannedTicket.userName}
@@ -699,32 +687,31 @@ export default function TicketScannerPage() {
                     <button
                       onClick={confirmCheckIn}
                       disabled={checkingIn || sheetStatus === "cancelled" || sheetStatus === "already_checked_in" || sheetStatus === "success"}
-                      className={`w-full h-11 text-white font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm ${
-                        sheetStatus === "cancelled"
-                          ? "bg-red-500"
-                          : sheetStatus === "already_checked_in"
+                      className={`w-full h-11 text-white font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:cursor-not-allowed shadow-none ${sheetStatus === "cancelled"
+                        ? "bg-red-500"
+                        : sheetStatus === "already_checked_in"
                           ? "bg-amber-500"
                           : sheetStatus === "success"
-                          ? "bg-emerald-500"
-                          : "bg-[#AC9BF7] hover:bg-[#907ef0]"
-                      }`}
+                            ? "bg-emerald-500"
+                            : "bg-[#AC9BF7] hover:bg-[#907ef0]"
+                        }`}
                     >
-                      {checkingIn 
-                        ? "PROCESSING..." 
+                      {checkingIn
+                        ? "PROCESSING..."
                         : sheetStatus === "cancelled"
-                        ? "TICKET CANCELLED"
-                        : sheetStatus === "already_checked_in"
-                        ? "ALREADY CHECKED IN"
-                        : sheetStatus === "success"
-                        ? "CHECK-IN SUCCESS"
-                        : "CHECK IN"}
+                          ? "TICKET CANCELLED"
+                          : sheetStatus === "already_checked_in"
+                            ? "ALREADY CHECKED IN"
+                            : sheetStatus === "success"
+                              ? "CHECK-IN SUCCESS"
+                              : "CHECK IN"}
                     </button>
 
                     {/* Rectangle 563: CHECK OUT Button */}
                     <button
                       onClick={confirmCheckOut}
                       disabled={checkingIn || sheetStatus === "success"}
-                      className="w-[254px] h-11 bg-[#CECECE] hover:bg-[#b5b5b5] text-[#ED4D1B] font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm mx-auto block"
+                      className="w-[254px] h-11 bg-[#CECECE] hover:bg-[#b5b5b5] text-[#ED4D1B] font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-none mx-auto block"
                     >
                       CHECK OUT
                     </button>
@@ -817,7 +804,7 @@ export default function TicketScannerPage() {
 
                   {/* Live Video Viewer (Figma: Screenshot... width: 402px, height: 708px, top: 77px) */}
                   <div className="flex-grow w-full relative overflow-hidden bg-zinc-950 flex items-center justify-center">
-                    
+
                     {/* Live video track */}
                     <video
                       ref={videoRef}
@@ -861,7 +848,7 @@ export default function TicketScannerPage() {
                     {/* QR scanning viewfinder box & screen overlay mask */}
                     {cameraPermission === "granted" && !manualEntryOpen && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 overflow-hidden">
-                        
+
                         {/* Interactive Viewfinder Target */}
                         <div className="w-[70%] max-w-[260px] aspect-square relative border border-white/15 rounded-2xl bg-white/[0.08] shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
                           {/* 4 Premium corner bracket frames matching attached screenshot */}
@@ -898,7 +885,7 @@ export default function TicketScannerPage() {
 
           {/* TAB 2: HOME VIEW (Dashboard Statistics & Scan Logs) */}
           {activeTab === "home" && (
-            <div 
+            <div
               className="w-full h-full flex flex-col px-6 py-5 overflow-y-auto font-[family-name:var(--font-anek-latin)] bg-transparent"
             >
               {/* Greetings */}
@@ -943,8 +930,8 @@ export default function TicketScannerPage() {
                     attendees: 8,
                   }
                 ].map((event, idx) => (
-                  <div 
-                    key={idx} 
+                  <div
+                    key={idx}
                     className="w-full h-[119px] bg-[#F5F5F5] rounded-[15px] flex items-center overflow-hidden border border-gray-100 relative transition-transform hover:scale-[1.01]"
                   >
                     {/* Left Lavender Thumbnail */}
@@ -952,7 +939,7 @@ export default function TicketScannerPage() {
 
                     {/* Right Details Section */}
                     <div className="flex-grow h-full py-3 px-3.5 flex flex-col justify-between min-w-0">
-                      
+
                       {/* Top Row: Status Badge */}
                       <div>
                         {event.status === "live" ? (
@@ -993,7 +980,7 @@ export default function TicketScannerPage() {
           {/* TAB 3: PROFILE VIEW (Organizer Credentials & Settings) */}
           {activeTab === "profile" && (
             <div className="w-full h-full flex flex-col p-5 justify-between overflow-y-auto">
-              
+
               <div className="space-y-5">
                 {/* Profile Heading */}
                 <div>
@@ -1016,7 +1003,7 @@ export default function TicketScannerPage() {
                 {/* Settings Grid list */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Gate Config</h3>
-                  
+
                   <div className="bg-white rounded-[20px] border border-[#EBEBEB] divide-y divide-[#F2F2F2] overflow-hidden shadow-sm text-sm">
                     <div className="flex justify-between items-center p-4">
                       <span className="text-[#686868] font-medium">Assigned Event</span>
@@ -1035,7 +1022,7 @@ export default function TicketScannerPage() {
 
                 <div className="space-y-3">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Utility Actions</h3>
-                  
+
                   <div className="bg-white rounded-[20px] border border-[#EBEBEB] divide-y divide-[#F2F2F2] overflow-hidden shadow-sm text-sm">
                     <button
                       onClick={() => {
@@ -1090,31 +1077,29 @@ export default function TicketScannerPage() {
 
 
         {/* Bottom Navigation Bar (Figma spec heights: home, scanner, profile top 795px to bottom 874px = 79px) */}
-        <footer className={`h-[79px] w-full grid grid-cols-3 shrink-0 relative z-40 ${
-          (activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null))
-            ? "bg-transparent border-t border-[#686868]/60" 
-            : "bg-white border-t border-[#F0F0F0]"
-        }`}>
-          
+        <footer className={`h-[79px] w-full grid grid-cols-3 shrink-0 relative z-40 ${(activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null))
+          ? "bg-transparent border-t border-[#686868]/60"
+          : "bg-white border-t border-[#F0F0F0]"
+          }`}>
+
           {/* TAB 1: Home Button (Figma: Label left 30px, top 829px; Icon left 38px, top 795px) */}
           <button
             onClick={() => setActiveTab("home")}
             className="flex flex-col items-center justify-center cursor-pointer space-y-1"
           >
-            <svg 
+            <svg
               className="w-[26px] h-[26px] transition-colors"
-              viewBox="0 0 28 28" 
-              fill="none" 
+              viewBox="0 0 28 28"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path 
-                d="M10.6566 24.2362V20.6689C10.6566 19.7582 11.4002 19.02 12.3175 19.02H15.6707C16.1112 19.02 16.5337 19.1937 16.8452 19.5029C17.1567 19.8122 17.3317 20.2316 17.3317 20.6689V24.2362C17.3289 24.6148 17.4784 24.9788 17.7471 25.2475C18.0158 25.5162 18.3814 25.6673 18.7628 25.6673H21.0505C22.1189 25.6701 23.1446 25.2506 23.901 24.5016C24.6575 23.7525 25.0827 22.7355 25.0827 21.6748V11.512C25.0827 10.6552 24.7001 9.84247 24.0381 9.29276L16.2557 3.1225C14.902 2.04064 12.9623 2.07557 11.649 3.20546L4.0442 9.29276C3.35088 9.82626 2.93649 10.6414 2.91602 11.512V21.6644C2.91602 23.8751 4.72129 25.6673 6.94822 25.6673H9.18369C9.97578 25.6673 10.6195 25.0329 10.6253 24.2466L10.6566 24.2362Z" 
-                fill={activeTab === "home" ? "#5331EA" : "#686868"} 
+              <path
+                d="M10.6566 24.2362V20.6689C10.6566 19.7582 11.4002 19.02 12.3175 19.02H15.6707C16.1112 19.02 16.5337 19.1937 16.8452 19.5029C17.1567 19.8122 17.3317 20.2316 17.3317 20.6689V24.2362C17.3289 24.6148 17.4784 24.9788 17.7471 25.2475C18.0158 25.5162 18.3814 25.6673 18.7628 25.6673H21.0505C22.1189 25.6701 23.1446 25.2506 23.901 24.5016C24.6575 23.7525 25.0827 22.7355 25.0827 21.6748V11.512C25.0827 10.6552 24.7001 9.84247 24.0381 9.29276L16.2557 3.1225C14.902 2.04064 12.9623 2.07557 11.649 3.20546L4.0442 9.29276C3.35088 9.82626 2.93649 10.6414 2.91602 11.512V21.6644C2.91602 23.8751 4.72129 25.6673 6.94822 25.6673H9.18369C9.97578 25.6673 10.6195 25.0329 10.6253 24.2466L10.6566 24.2362Z"
+                fill={activeTab === "home" ? "#5331EA" : "#686868"}
               />
             </svg>
-            <span className={`text-[12px] font-medium transition-colors ${
-              activeTab === "home" ? "text-[#5331EA]" : "text-[#686868]"
-            }`}>
+            <span className={`text-[12px] font-medium transition-colors ${activeTab === "home" ? "text-[#5331EA]" : "text-[#686868]"
+              }`}>
               Home
             </span>
           </button>
@@ -1127,20 +1112,19 @@ export default function TicketScannerPage() {
             }}
             className="flex flex-col items-center justify-center cursor-pointer space-y-1"
           >
-            <svg 
+            <svg
               className="w-[26px] h-[26px] transition-colors"
-              viewBox="0 0 28 28" 
-              fill="none" 
+              viewBox="0 0 28 28"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path 
-                d="M23.3333 15.1667H4.66667C4.35725 15.1667 4.0605 15.0437 3.84171 14.825C3.62292 14.6062 3.5 14.3094 3.5 14C3.5 13.6906 3.62292 13.3938 3.84171 13.175C4.0605 12.9562 4.35725 12.8333 4.66667 12.8333H23.3333C23.6428 12.8333 23.9395 12.9562 24.1583 13.175C24.3771 13.3938 24.5 13.6906 24.5 14C24.5 14.3094 24.3771 14.6062 24.1583 14.825C23.9395 15.0437 23.6428 15.1667 23.3333 15.1667ZM23.3333 10.5C23.0239 10.5 22.7272 10.3771 22.5084 10.1583C22.2896 9.9395 22.1667 9.64275 22.1667 9.33333V7C22.1667 6.69058 22.0438 6.39383 21.825 6.17504C21.6062 5.95625 21.3094 5.83333 21 5.83333H18.6667C18.3572 5.83333 18.0605 5.71042 17.8417 5.49162C17.6229 5.27283 17.5 4.97609 17.5 4.66667C17.5 4.35725 17.6229 4.0605 17.8417 3.84171C18.0605 3.62292 18.3572 3.5 18.6667 3.5H21C21.9283 3.5 22.8185 3.86875 23.4749 4.52513C24.1313 5.1815 24.5 6.07174 24.5 7V9.33333C24.5 9.64275 24.3771 9.9395 24.1583 10.1583C23.9395 10.3771 23.6428 10.5 23.3333 10.5ZM4.66667 10.5C4.35725 10.5 4.0605 10.3771 3.84171 10.1583C3.62292 9.9395 3.5 9.64275 3.5 9.33333V7C3.5 6.07174 3.86875 5.1815 4.52513 4.52513C5.1815 3.86875 6.07174 3.5 7 3.5H9.33333C9.64275 3.5 9.9395 3.62292 10.1583 3.84171C10.3771 4.0605 10.5 4.35725 10.5 4.66667C10.5 4.97609 10.3771 5.27283 10.1583 5.49162C9.9395 5.71042 9.64275 5.83333 9.33333 5.83333H7C6.69058 5.83333 6.39383 5.95625 6.17504 6.17504C5.95625 6.39383 5.83333 6.69058 5.83333 7V9.33333C5.83333 9.64275 5.71042 9.9395 5.49162 10.1583C5.27283 10.3771 4.97609 10.5 4.66667 10.5ZM9.33333 24.5H7C6.07174 24.5 5.1815 24.1313 4.52513 23.4749C3.86875 22.8185 3.5 21.9283 3.5 21V18.6667C3.5 18.3572 3.62292 18.0605 3.84171 17.8417C4.0605 17.6229 4.35725 17.5 4.66667 17.5C4.97609 17.5 5.27283 17.6229 5.49162 17.8417C5.71042 18.0605 5.83333 18.3572 5.83333 18.6667V21C5.83333 21.3094 5.95625 21.6062 6.17504 21.825C6.39383 22.0438 6.69058 22.1667 7 22.1667H9.33333C9.64275 22.1667 9.9395 22.2896 10.1583 22.5084C10.3771 22.7272 10.5 23.0239 10.5 23.3333C10.5 23.6428 10.3771 23.9395 10.1583 24.1583C9.9395 24.3771 9.64275 24.5 9.33333 24.5ZM21 24.5H18.6667C18.3572 24.5 18.0605 24.3771 17.8417 24.1583C17.6229 23.9395 17.5 23.6428 17.5 23.3333C17.5 23.0239 17.6229 22.7272 17.8417 22.5084C18.0605 22.2896 18.3572 22.1667 18.6667 22.1667H21C21.3094 22.1667 21.6062 22.0438 21.825 21.825C22.0438 21.6062 22.1667 21.3094 22.1667 21V18.6667C22.1667 18.3572 22.2896 18.0605 22.5084 17.8417C22.7272 17.6229 23.0239 17.5 23.3333 17.5C23.6428 17.5 23.9395 17.6229 24.1583 17.8417C24.3771 18.0605 24.5 18.3572 24.5 18.6667V21C24.5 21.9283 24.1313 22.8185 23.4749 23.4749C22.8185 24.1313 21.9283 24.5 21 24.5Z" 
-                fill={activeTab === "scanner" ? "#5331EA" : "#686868"} 
+              <path
+                d="M23.3333 15.1667H4.66667C4.35725 15.1667 4.0605 15.0437 3.84171 14.825C3.62292 14.6062 3.5 14.3094 3.5 14C3.5 13.6906 3.62292 13.3938 3.84171 13.175C4.0605 12.9562 4.35725 12.8333 4.66667 12.8333H23.3333C23.6428 12.8333 23.9395 12.9562 24.1583 13.175C24.3771 13.3938 24.5 13.6906 24.5 14C24.5 14.3094 24.3771 14.6062 24.1583 14.825C23.9395 15.0437 23.6428 15.1667 23.3333 15.1667ZM23.3333 10.5C23.0239 10.5 22.7272 10.3771 22.5084 10.1583C22.2896 9.9395 22.1667 9.64275 22.1667 9.33333V7C22.1667 6.69058 22.0438 6.39383 21.825 6.17504C21.6062 5.95625 21.3094 5.83333 21 5.83333H18.6667C18.3572 5.83333 18.0605 5.71042 17.8417 5.49162C17.6229 5.27283 17.5 4.97609 17.5 4.66667C17.5 4.35725 17.6229 4.0605 17.8417 3.84171C18.0605 3.62292 18.3572 3.5 18.6667 3.5H21C21.9283 3.5 22.8185 3.86875 23.4749 4.52513C24.1313 5.1815 24.5 6.07174 24.5 7V9.33333C24.5 9.64275 24.3771 9.9395 24.1583 10.1583C23.9395 10.3771 23.6428 10.5 23.3333 10.5ZM4.66667 10.5C4.35725 10.5 4.0605 10.3771 3.84171 10.1583C3.62292 9.9395 3.5 9.64275 3.5 9.33333V7C3.5 6.07174 3.86875 5.1815 4.52513 4.52513C5.1815 3.86875 6.07174 3.5 7 3.5H9.33333C9.64275 3.5 9.9395 3.62292 10.1583 3.84171C10.3771 4.0605 10.5 4.35725 10.5 4.66667C10.5 4.97609 10.3771 5.27283 10.1583 5.49162C9.9395 5.71042 9.64275 5.83333 9.33333 5.83333H7C6.69058 5.83333 6.39383 5.95625 6.17504 6.17504C5.95625 6.39383 5.83333 6.69058 5.83333 7V9.33333C5.83333 9.64275 5.71042 9.9395 5.49162 10.1583C5.27283 10.3771 4.97609 10.5 4.66667 10.5ZM9.33333 24.5H7C6.07174 24.5 5.1815 24.1313 4.52513 23.4749C3.86875 22.8185 3.5 21.9283 3.5 21V18.6667C3.5 18.3572 3.62292 18.0605 3.84171 17.8417C4.0605 17.6229 4.35725 17.5 4.66667 17.5C4.97609 17.5 5.27283 17.6229 5.49162 17.8417C5.71042 18.0605 5.83333 18.3572 5.83333 18.6667V21C5.83333 21.3094 5.95625 21.6062 6.17504 21.825C6.39383 22.0438 6.69058 22.1667 7 22.1667H9.33333C9.64275 22.1667 9.9395 22.2896 10.1583 22.5084C10.3771 22.7272 10.5 23.0239 10.5 23.3333C10.5 23.6428 10.3771 23.9395 10.1583 24.1583C9.9395 24.3771 9.64275 24.5 9.33333 24.5ZM21 24.5H18.6667C18.3572 24.5 18.0605 24.3771 17.8417 24.1583C17.6229 23.9395 17.5 23.6428 17.5 23.3333C17.5 23.0239 17.6229 22.7272 17.8417 22.5084C18.0605 22.2896 18.3572 22.1667 18.6667 22.1667H21C21.3094 22.1667 21.6062 22.0438 21.825 21.825C22.0438 21.6062 22.1667 21.3094 22.1667 21V18.6667C22.1667 18.3572 22.2896 18.0605 22.5084 17.8417C22.7272 17.6229 23.0239 17.5 23.3333 17.5C23.6428 17.5 23.9395 17.6229 24.1583 17.8417C24.3771 18.0605 24.5 18.3572 24.5 18.6667V21C24.5 21.9283 24.1313 22.8185 23.4749 23.4749C22.8185 24.1313 21.9283 24.5 21 24.5Z"
+                fill={activeTab === "scanner" ? "#5331EA" : "#686868"}
               />
             </svg>
-            <span className={`text-[12px] font-medium transition-colors ${
-              activeTab === "scanner" ? "text-[#5331EA]" : "text-[#686868]"
-            }`}>
+            <span className={`text-[12px] font-medium transition-colors ${activeTab === "scanner" ? "text-[#5331EA]" : "text-[#686868]"
+              }`}>
               Scanner
             </span>
           </button>
@@ -1150,32 +1134,31 @@ export default function TicketScannerPage() {
             onClick={() => setActiveTab("profile")}
             className="flex flex-col items-center justify-center cursor-pointer space-y-1"
           >
-            <svg 
+            <svg
               className="w-[26px] h-[26px] transition-colors"
-              viewBox="0 0 18 22" 
-              fill="none" 
+              viewBox="0 0 18 22"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path 
-                d="M8.75537 10.7074C11.5424 10.7074 13.8018 8.4784 13.8018 5.72872C13.8018 2.97905 11.5424 0.75 8.75537 0.75C5.96833 0.75 3.70898 2.97905 3.70898 5.72872C3.70898 8.4784 5.96833 10.7074 8.75537 10.7074Z" 
-                stroke={activeTab === "profile" ? "#5331EA" : "#686868"} 
-                strokeWidth="1.5" 
-                strokeLinecap="round" 
+              <path
+                d="M8.75537 10.7074C11.5424 10.7074 13.8018 8.4784 13.8018 5.72872C13.8018 2.97905 11.5424 0.75 8.75537 0.75C5.96833 0.75 3.70898 2.97905 3.70898 5.72872C3.70898 8.4784 5.96833 10.7074 8.75537 10.7074Z"
+                stroke={activeTab === "profile" ? "#5331EA" : "#686868"}
+                strokeWidth="1.5"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <path 
-                fillRule="evenodd" 
-                clipRule="evenodd" 
-                d="M0.750017 17.631C0.748678 17.281 0.828018 16.9353 0.982053 16.62C1.46543 15.6662 2.82854 15.1607 3.95963 14.9318C4.77538 14.76 5.60239 14.6453 6.4345 14.5884C7.97511 14.4549 9.52462 14.4549 11.0652 14.5884C11.8973 14.6459 12.7242 14.7607 13.5401 14.9318C14.6712 15.1607 16.0343 15.6185 16.5177 16.62C16.8274 17.2627 16.8274 18.0088 16.5177 18.6515C16.0343 19.653 14.6712 20.1108 13.5401 20.3302C12.7253 20.5091 11.898 20.627 11.0652 20.6831C9.81129 20.788 8.55151 20.8071 7.29491 20.7403C7.00489 20.7403 6.72453 20.7403 6.4345 20.6831C5.60484 20.6277 4.7807 20.5097 3.9693 20.3302C2.82854 20.1108 1.47509 19.653 0.982053 18.6515C0.828805 18.3326 0.749544 17.984 0.750017 17.631Z" 
-                stroke={activeTab === "profile" ? "#5331EA" : "#686868"} 
-                strokeWidth="1.5" 
-                strokeLinecap="round" 
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M0.750017 17.631C0.748678 17.281 0.828018 16.9353 0.982053 16.62C1.46543 15.6662 2.82854 15.1607 3.95963 14.9318C4.77538 14.76 5.60239 14.6453 6.4345 14.5884C7.97511 14.4549 9.52462 14.4549 11.0652 14.5884C11.8973 14.6459 12.7242 14.7607 13.5401 14.9318C14.6712 15.1607 16.0343 15.6185 16.5177 16.62C16.8274 17.2627 16.8274 18.0088 16.5177 18.6515C16.0343 19.653 14.6712 20.1108 13.5401 20.3302C12.7253 20.5091 11.898 20.627 11.0652 20.6831C9.81129 20.788 8.55151 20.8071 7.29491 20.7403C7.00489 20.7403 6.72453 20.7403 6.4345 20.6831C5.60484 20.6277 4.7807 20.5097 3.9693 20.3302C2.82854 20.1108 1.47509 19.653 0.982053 18.6515C0.828805 18.3326 0.749544 17.984 0.750017 17.631Z"
+                stroke={activeTab === "profile" ? "#5331EA" : "#686868"}
+                strokeWidth="1.5"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
-            <span className={`text-[12px] font-medium transition-colors ${
-              activeTab === "profile" ? "text-[#5331EA]" : "text-[#686868]"
-            }`}>
+            <span className={`text-[12px] font-medium transition-colors ${activeTab === "profile" ? "text-[#5331EA]" : "text-[#686868]"
+              }`}>
               Profile
             </span>
           </button>
