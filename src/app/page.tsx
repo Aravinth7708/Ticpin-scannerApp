@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Zap,
-  ZapOff,
   Camera,
   Check,
   AlertTriangle,
@@ -562,7 +560,26 @@ export default function TicketScannerPage() {
               }`}
               title="Toggle Flash"
             >
-              {flashOn ? <Zap className="w-4.5 h-4.5" /> : <ZapOff className="w-4.5 h-4.5" />}
+              <svg 
+                width="21" 
+                height="21" 
+                viewBox="0 0 21 21" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-[18px] h-[18px]"
+              >
+                <g clipPath="url(#clip0_990_1899)">
+                  <path 
+                    d="M17.7014 9.69378C17.6768 9.58874 17.6266 9.49141 17.5553 9.41039C17.4841 9.32937 17.394 9.26716 17.293 9.22927L12.5655 7.45646L13.7685 1.44119C13.7965 1.30118 13.7781 1.15586 13.716 1.02727C13.654 0.89868 13.5517 0.793839 13.4246 0.728648C13.2976 0.663457 13.1528 0.641473 13.0121 0.66603C12.8715 0.690587 12.7427 0.760345 12.6452 0.864724L3.45775 10.7085C3.38413 10.7873 3.3311 10.8832 3.30334 10.9874C3.27558 11.0917 3.27396 11.2012 3.29861 11.3062C3.32327 11.4112 3.37344 11.5086 3.44469 11.5896C3.51594 11.6706 3.60606 11.7328 3.70709 11.7707L8.43458 13.5435L7.23151 19.5588C7.2035 19.6988 7.22191 19.8441 7.28397 19.9727C7.34603 20.1013 7.44833 20.2062 7.57537 20.2714C7.70241 20.3366 7.84724 20.3586 7.9879 20.334C8.12856 20.3094 8.25737 20.2397 8.35479 20.1353L17.5423 10.2915C17.6159 10.2126 17.6689 10.1168 17.6967 10.0126C17.7245 9.90831 17.7261 9.79882 17.7014 9.69378Z" 
+                    fill="currentColor"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_990_1899">
+                    <rect width="21" height="21" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
             </button>
           ) : (
             <button
@@ -1126,7 +1143,7 @@ export default function TicketScannerPage() {
                 fill={activeTab === "home" ? "#5331EA" : "#686868"} 
               />
             </svg>
-            <span className={`text-[12px] font-bold transition-colors ${
+            <span className={`text-[12px] font-medium transition-colors ${
               activeTab === "home" ? "text-[#5331EA]" : "text-[#686868]"
             }`}>
               Home
@@ -1149,7 +1166,7 @@ export default function TicketScannerPage() {
                 fill={activeTab === "scanner" ? "#5331EA" : "#686868"} 
               />
             </svg>
-            <span className={`text-[12px] font-bold transition-colors ${
+            <span className={`text-[12px] font-medium transition-colors ${
               activeTab === "scanner" ? "text-[#5331EA]" : "text-[#686868]"
             }`}>
               Scanner
@@ -1184,7 +1201,7 @@ export default function TicketScannerPage() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className={`text-[12px] font-bold transition-colors ${
+            <span className={`text-[12px] font-medium transition-colors ${
               activeTab === "profile" ? "text-[#5331EA]" : "text-[#686868]"
             }`}>
               Profile
