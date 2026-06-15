@@ -807,7 +807,7 @@ export default function TicketScannerPage() {
                 ].map((event, idx) => (
                   <div 
                     key={idx} 
-                    className="w-full h-[119px] bg-[#F5F5F5] rounded-[15px] flex items-center overflow-hidden border border-gray-100 shadow-sm relative transition-transform hover:scale-[1.01]"
+                    className="w-full h-[119px] bg-[#F5F5F5] rounded-[15px] flex items-center overflow-hidden border border-gray-100 relative transition-transform hover:scale-[1.01]"
                   >
                     {/* Left Lavender Thumbnail */}
                     <div className="w-[89px] h-full bg-[#BDB1F3] rounded-[15px] shrink-0" />
