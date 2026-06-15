@@ -729,30 +729,19 @@ export default function TicketScannerPage() {
 
                 {/* QR scanning viewfinder box & screen overlay mask */}
                 {cameraPermission === "granted" && !manualEntryOpen && (
-                  <div className="absolute inset-0 flex flex-col justify-between pointer-events-none z-10">
-                    {/* Dark translucent backdrop around viewfinder */}
-                    <div className="h-[15%] bg-black/50 w-full" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 overflow-hidden">
                     
-                    <div className="h-[55%] flex justify-between w-full">
-                      <div className="w-[15%] bg-black/50" />
-                      
-                      {/* Interactive Viewfinder Target (Figma box matching corner brackets) */}
-                      <div className="w-[70%] max-w-[260px] aspect-square relative border border-white/20 rounded-3xl">
-                        
-                        {/* 4 Premium corner bracket frames matching attached screenshot */}
-                        <div className="absolute top-0 left-0 w-8 h-8 border-t-[4px] border-l-[4px] border-white rounded-tl-[24px]" />
-                        <div className="absolute top-0 right-0 w-8 h-8 border-t-[4px] border-r-[4px] border-white rounded-tr-[24px]" />
-                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[4px] border-l-[4px] border-white rounded-bl-[24px]" />
-                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-[4px] border-r-[4px] border-white rounded-br-[24px]" />
-                        
-                        {/* Moving horizontal laser pointer line */}
-                        <div className="absolute top-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-[#5331EA] to-transparent shadow-[0_0_15px_#5331EA] animate-scan-laser rounded-full" />
-                      </div>
-                      
-                      <div className="w-[15%] bg-black/50" />
+                    {/* Interactive Viewfinder Target */}
+                    <div className="w-[70%] max-w-[260px] aspect-square relative border border-white/15 rounded-2xl bg-white/[0.08] shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
+                      {/* 4 Premium corner bracket frames matching attached screenshot */}
+                      <div className="absolute top-0 left-0 w-6 h-6 border-t-[1.5px] border-l-[1.5px] border-white/65 rounded-tl-[16px]" />
+                      <div className="absolute top-0 right-0 w-6 h-6 border-t-[1.5px] border-r-[1.5px] border-white/65 rounded-tr-[16px]" />
+                      <div className="absolute bottom-0 left-0 w-6 h-6 border-b-[1.5px] border-l-[1.5px] border-white/65 rounded-bl-[16px]" />
+                      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-[1.5px] border-r-[1.5px] border-white/65 rounded-br-[16px]" />
                     </div>
 
-                    <div className="h-[30%] bg-black/50 w-full flex flex-col items-center justify-start pt-6">
+                    {/* Bottom Label (placed absolutely at the bottom area of the viewport) */}
+                    <div className="absolute bottom-[8%] left-0 right-0 flex justify-center">
                       <span className="text-white text-xs font-semibold bg-black/70 px-4 py-1.5 rounded-full border border-white/10 tracking-wide text-center">
                         Align Ticket QR inside the frame
                       </span>
