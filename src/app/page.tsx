@@ -463,11 +463,6 @@ export default function TicketScannerPage() {
     setSheetStatus("success");
     playSound("success");
     setCheckingIn(false);
-
-    // Auto close bottom sheet after 1.5 seconds to return to camera scan
-    setTimeout(() => {
-      dismissBottomSheet();
-    }, 1800);
   };
 
   // Perform Check-Out Operation
@@ -560,9 +555,11 @@ export default function TicketScannerPage() {
       <div
         className="w-full h-full md:relative md:w-[380px] md:h-[820px] md:max-h-[90vh] rounded-none md:rounded-[40px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border-0 md:border-8 border-[#201D30] overflow-hidden flex flex-col transition-all duration-300 scanner-phone-card"
         style={{
-          background: (activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null))
-            ? "linear-gradient(360deg, #AC9BF7 -134.32%, #FFFFFF 47.71%)"
-            : "white"
+          background: (activeTab === "scanner" && scannedTicket !== null && sheetStatus === "success")
+            ? "radial-gradient(258.58% 64.96% at 50% 11.61%, #D6FAE5 0%, #FFFFFF 100%)"
+            : (activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null))
+              ? "linear-gradient(360deg, #AC9BF7 -134.32%, #FFFFFF 47.71%)"
+              : "white"
         }}
       >
 
@@ -572,7 +569,10 @@ export default function TicketScannerPage() {
         </div>
 
         {/* Top Header Section (Figma: Wordmark Top 27px, Left 25px; Lightning Top 21px, Left 346px) */}
-        <header className="h-[77px] w-full bg-white border-b border-[#686868] flex items-center justify-between px-6 shrink-0 relative z-40">
+        <header className={`h-[77px] w-full border-b border-[#686868] flex items-center justify-between px-6 shrink-0 relative z-40 transition-colors duration-300 ${(activeTab === "home" || (activeTab === "scanner" && scannedTicket !== null))
+            ? "bg-transparent"
+            : "bg-white"
+          }`}>
           {/* Logo (Figma: Wordmark PNG 1.png at left 25px, top 27px) */}
           <div className="flex items-center gap-1.5 mt-2">
             <img
@@ -595,9 +595,8 @@ export default function TicketScannerPage() {
           {activeTab === "scanner" && scannedTicket === null && (
             <button
               onClick={toggleFlash}
-              className={`w-[33px] h-[33px] rounded-full flex items-center justify-center transition-colors duration-200 mt-1 cursor-pointer ${
-                flashOn ? "bg-[#5331EA] text-white" : "bg-[#D9D9D9] text-[#2F2F2F] hover:bg-gray-300"
-              }`}
+              className={`w-[33px] h-[33px] rounded-full flex items-center justify-center transition-colors duration-200 mt-1 cursor-pointer ${flashOn ? "bg-[#5331EA] text-white" : "bg-[#D9D9D9] text-[#2F2F2F] hover:bg-gray-300"
+                }`}
               title="Toggle Flash"
             >
               <svg
@@ -634,89 +633,198 @@ export default function TicketScannerPage() {
               }`}>
 
               {scannedTicket ? (
-                /* NEW AFTER-SCAN SCREEN */
-                <div className="flex-grow w-full px-6 py-4 flex flex-col justify-between overflow-hidden font-[family-name:var(--font-anek-latin)] h-full">
+                sheetStatus === "success" ? (
+                  /* NEW TICKET VERIFIED SCREEN (after clicking check-in button) */
+                  <div className="flex-grow w-full px-6 py-4 flex flex-col justify-between overflow-y-auto font-[family-name:var(--font-anek-latin)] h-full after-scan-container animate-in fade-in duration-300">
+                    {/* Top Success Header / Status Badge */}
+                    <div className="flex flex-col items-center text-center success-badge-wrapper shrink-0">
+                      <img
+                        src="/home icons/check-circle.svg"
+                        alt="Verified"
+                        className="w-[61px] h-[61px] success-check-circle"
+                      />
+                      <h2 className="font-semibold text-[22px] text-black mt-3 success-title leading-tight">
+                        Ticket Verified!
+                      </h2>
+                      <p className="text-[12px] font-medium text-[#686868] mt-1 success-subtitle">
+                        {scannedTicket.date || "16 Jun 2026"}, {scannedTicket.checkInTime || new Date().toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true }).toUpperCase()}
+                      </p>
+                    </div>
 
-                  {/* Rectangle 561: Ticket Details Card */}
-                  <div className="bg-white rounded-[10px] border border-[#686868]/30 p-4 space-y-3 relative mt-2 w-full max-w-[352px] mx-auto shrink-0">
+                    {/* Rectangle 561: Ticket Details Card */}
+                    <div className="bg-transparent rounded-[10px] border border-[#686868]/30 p-5 w-full max-w-[352px] h-[309px] mx-auto flex flex-col justify-between ticket-details-card shrink-0">
+                      {/* Card Header: Avatar & Name */}
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-[63px] h-[63px] bg-[#D9D9D9] rounded-full shrink-0 avatar-circle" />
+                        <div className="min-w-0 flex-grow">
+                          <h3 className="font-semibold text-[18px] text-black leading-tight truncate">
+                            {scannedTicket.userName}
+                          </h3>
+                          <p className="text-[12px] font-medium text-[#686868] mt-1 truncate">
+                            {scannedTicket.category} x {scannedTicket.quantity}
+                          </p>
+                        </div>
+                      </div>
 
+                      {/* Divider rows (Booking ID, Order ID, Event, Date, Venue) */}
+                      <div className="flex-grow flex flex-col justify-between pt-2.5 text-[12px] details-rows">
+                        <div className="flex flex-col justify-between flex-grow">
+                          <div className="flex justify-between py-1">
+                            <span className="text-[#686868] font-medium shrink-0">Booking ID</span>
+                            <span className="font-medium text-black text-right ml-4 truncate">#{scannedTicket.id}</span>
+                          </div>
+                          <div className="border-t border-[#AEAEAE]/50 w-full my-0.5" />
 
-                    {/* Card Header: Avatar & Name */}
-                    <div className="flex items-center gap-3.5">
-                      {/* Ellipse 77: Avatar Placeholder */}
-                      <div className="w-[63px] h-[63px] bg-[#D9D9D9] rounded-full shrink-0" />
+                          <div className="flex justify-between py-1">
+                            <span className="text-[#686868] font-medium shrink-0">Order ID</span>
+                            <span className="font-medium text-black text-right ml-4 truncate">ORD-{scannedTicket.id.replace("T-", "99")}</span>
+                          </div>
+                          <div className="border-t border-[#AEAEAE]/50 w-full my-0.5" />
 
-                      <div className="min-w-0 flex-grow">
-                        <h3 className="font-semibold text-[18px] text-black leading-tight truncate font-sans">
-                          {scannedTicket.userName}
-                        </h3>
-                        <p className="text-[12px] font-medium text-[#686868] mt-1 font-sans truncate">
-                          {scannedTicket.category} x {scannedTicket.quantity}
+                          <div className="flex justify-between py-1">
+                            <span className="text-[#686868] font-medium shrink-0">Event</span>
+                            <span className="font-medium text-black text-right ml-4 truncate max-w-[190px] flex-grow">{scannedTicket.eventName}</span>
+                          </div>
+                          <div className="border-t border-[#AEAEAE]/50 w-full my-0.5" />
+
+                          <div className="flex justify-between py-1">
+                            <span className="text-[#686868] font-medium shrink-0">Date</span>
+                            <span className="font-medium text-black text-right ml-4 truncate">{scannedTicket.date}</span>
+                          </div>
+                          <div className="border-t border-[#AEAEAE]/50 w-full my-0.5" />
+
+                          <div className="flex justify-between py-1">
+                            <span className="text-[#686868] font-medium shrink-0">Venue</span>
+                            <span className="font-medium text-black text-right ml-4 truncate max-w-[190px] flex-grow">{scannedTicket.venueName}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Rectangle 564 / Status Banner */}
+                    <div className="w-full max-w-[352px] h-[65px] bg-transparent border border-[#686868]/30 rounded-[10px] flex items-center px-4 gap-3.5 mx-auto entry-recorded-banner shrink-0">
+                      <img
+                        src="/home icons/secure.svg"
+                        alt="Secure"
+                        className="w-[43px] h-[43px] secure-icon shrink-0"
+                      />
+                      <div className="flex flex-col justify-center">
+                        <h4 className="font-semibold text-[15px] text-[#0AC655] leading-tight">
+                          Entry recorded
+                        </h4>
+                        <p className="text-[12px] font-medium text-[#686868] mt-0.5 leading-none">
+                          This ticket has been checked in.
                         </p>
                       </div>
                     </div>
 
-                    {/* Divider rows (Booking ID, Order ID, Event, Date, Venue) */}
-                    <div className="divide-y divide-[#AEAEAE]/50 text-[12px] pt-1">
-                      <div className="flex justify-between py-2">
-                        <span className="text-[#686868] font-medium">Booking ID</span>
-                        <span className="font-medium text-black">#{scannedTicket.id}</span>
-                      </div>
-                      <div className="flex justify-between py-2">
-                        <span className="text-[#686868] font-medium">Order ID</span>
-                        <span className="font-medium text-black">ORD-{scannedTicket.id.replace("T-", "99")}</span>
-                      </div>
-                      <div className="flex justify-between py-2">
-                        <span className="text-[#686868] font-medium">Event</span>
-                        <span className="font-medium text-black truncate max-w-[180px]">{scannedTicket.eventName}</span>
-                      </div>
-                      <div className="flex justify-between py-2">
-                        <span className="text-[#686868] font-medium">Date</span>
-                        <span className="font-medium text-black">{scannedTicket.date}</span>
-                      </div>
-                      <div className="flex justify-between py-2 text-right">
-                        <span className="text-[#686868] font-medium shrink-0">Venue</span>
-                        <span className="font-medium text-black truncate ml-4">{scannedTicket.venueName}</span>
-                      </div>
+                    {/* Actions Area */}
+                    <div className="w-full max-w-[352px] mx-auto flex flex-col gap-3 pb-2 shrink-0 after-scan-buttons">
+                      <button
+                        onClick={dismissBottomSheet}
+                        className="w-full h-11 bg-[#0AC655] hover:bg-[#09b24c] active:bg-[#089d43] text-white font-medium rounded-[10px] flex items-center justify-center gap-2 text-[20px] transition-colors cursor-pointer"
+                      >
+                        <img
+                          src="/home icons/scan.svg"
+                          alt="Scan"
+                          className="w-6 h-6"
+                        />
+                        <span>SCAN NEXT TICKET</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setActiveTab("home");
+                          dismissBottomSheet();
+                        }}
+                        className="w-[254px] h-11 bg-[#AC9BF7] hover:bg-[#9988e8] active:bg-[#8675d9] text-white font-medium rounded-[10px] flex items-center justify-center gap-2 text-[20px] transition-colors cursor-pointer mx-auto flex justify-center items-center"
+                      >
+                        <img
+                          src="/home icons/GroupW.svg"
+                          alt="Attendees"
+                          className="w-[18px] h-[22px]"
+                        />
+                        <span>VIEW ATTENDEE LIST</span>
+                      </button>
                     </div>
                   </div>
+                ) : (
+                  /* ORIGINAL AFTER-SCAN SCREEN (shown on scan before click check-in button) */
+                  <div className="flex-grow w-full px-6 py-4 flex flex-col justify-between overflow-hidden font-[family-name:var(--font-anek-latin)] h-full animate-in fade-in duration-300">
 
-                  {/* Actions Area */}
-                  <div className="w-full max-w-[352px] mx-auto space-y-3 pb-2 shrink-0">
-                    {/* Rectangle 562: CHECK IN Button */}
-                    <button
-                      onClick={confirmCheckIn}
-                      disabled={checkingIn || sheetStatus === "cancelled" || sheetStatus === "already_checked_in" || sheetStatus === "success"}
-                      className={`w-full h-11 text-white font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:cursor-not-allowed shadow-none ${sheetStatus === "cancelled"
-                        ? "bg-red-500"
-                        : sheetStatus === "already_checked_in"
-                          ? "bg-amber-500"
-                          : sheetStatus === "success"
-                            ? "bg-emerald-500"
-                            : "bg-[#AC9BF7] hover:bg-[#907ef0]"
-                        }`}
-                    >
-                      {checkingIn
-                        ? "PROCESSING..."
-                        : sheetStatus === "cancelled"
-                          ? "TICKET CANCELLED"
+                    {/* Rectangle 561: Ticket Details Card */}
+                    <div className="bg-white rounded-[10px] border border-[#686868]/30 p-4 space-y-3 relative mt-2 w-full max-w-[352px] mx-auto shrink-0">
+                      {/* Card Header: Avatar & Name */}
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-[63px] h-[63px] bg-[#D9D9D9] rounded-full shrink-0" />
+                        <div className="min-w-0 flex-grow">
+                          <h3 className="font-semibold text-[18px] text-black leading-tight truncate font-sans">
+                            {scannedTicket.userName}
+                          </h3>
+                          <p className="text-[12px] font-medium text-[#686868] mt-1 font-sans truncate">
+                            {scannedTicket.category} x {scannedTicket.quantity}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Divider rows (Booking ID, Order ID, Event, Date, Venue) */}
+                      <div className="divide-y divide-[#AEAEAE]/50 text-[12px] pt-1 font-sans">
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#686868] font-medium">Booking ID</span>
+                          <span className="font-medium text-black">#{scannedTicket.id}</span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#686868] font-medium">Order ID</span>
+                          <span className="font-medium text-black">ORD-{scannedTicket.id.replace("T-", "99")}</span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#686868] font-medium">Event</span>
+                          <span className="font-medium text-black truncate max-w-[180px]">{scannedTicket.eventName}</span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#686868] font-medium">Date</span>
+                          <span className="font-medium text-black">{scannedTicket.date}</span>
+                        </div>
+                        <div className="flex justify-between py-2 text-right">
+                          <span className="text-[#686868] font-medium shrink-0 font-sans">Venue</span>
+                          <span className="font-medium text-black truncate ml-4 font-sans">{scannedTicket.venueName}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions Area */}
+                    <div className="w-full max-w-[352px] mx-auto space-y-3 pb-2 shrink-0">
+                      {/* Rectangle 562: CHECK IN Button */}
+                      <button
+                        onClick={confirmCheckIn}
+                        disabled={checkingIn || sheetStatus === "cancelled" || sheetStatus === "already_checked_in"}
+                        className={`w-full h-11 text-white font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:cursor-not-allowed shadow-none ${sheetStatus === "cancelled"
+                          ? "bg-red-500"
                           : sheetStatus === "already_checked_in"
-                            ? "ALREADY CHECKED IN"
-                            : sheetStatus === "success"
-                              ? "CHECK-IN SUCCESS"
+                            ? "bg-amber-500"
+                            : "bg-[#AC9BF7] hover:bg-[#907ef0]"
+                          }`}
+                      >
+                        {checkingIn
+                          ? "PROCESSING..."
+                          : sheetStatus === "cancelled"
+                            ? "TICKET CANCELLED"
+                            : sheetStatus === "already_checked_in"
+                              ? "ALREADY CHECKED IN"
                               : "CHECK IN"}
-                    </button>
+                      </button>
 
-                    {/* Rectangle 563: CHECK OUT Button */}
-                    <button
-                      onClick={confirmCheckOut}
-                      disabled={checkingIn || sheetStatus === "success"}
-                      className="w-[254px] h-11 bg-[#CECECE] hover:bg-[#b5b5b5] text-[#ED4D1B] font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-none mx-auto block"
-                    >
-                      CHECK OUT
-                    </button>
+                      {/* Rectangle 563: CHECK OUT Button */}
+                      <button
+                        onClick={confirmCheckOut}
+                        disabled={checkingIn}
+                        className="w-[254px] h-11 bg-[#CECECE] hover:bg-[#b5b5b5] text-[#ED4D1B] font-medium rounded-[10px] flex items-center justify-center text-[20px] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-none mx-auto block"
+                      >
+                        CHECK OUT
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )
               ) : (
                 <>
                   {/* Manual Entry Modal Input Toggle Overlay */}
@@ -1177,6 +1285,93 @@ export default function TicketScannerPage() {
         }
         .animate-scan-laser {
           animation: scan-laser 2.2s infinite ease-in-out;
+        }
+        
+        @media (max-height: 740px) {
+          .after-scan-container {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+          }
+          .success-badge-wrapper {
+            margin-bottom: 0.25rem !important;
+          }
+          .success-check-circle {
+            width: 48px !important;
+            height: 48px !important;
+          }
+          .success-check-circle svg {
+            width: 24px !important;
+            height: 24px !important;
+          }
+          .success-title {
+            font-size: 18px !important;
+            margin-top: 0.25rem !important;
+          }
+          .success-subtitle {
+            font-size: 11px !important;
+            margin-top: 0.1rem !important;
+          }
+          .ticket-details-card {
+            height: auto !important;
+            padding: 0.75rem 1rem !important;
+            margin-top: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+          .ticket-details-card .avatar-circle {
+            width: 48px !important;
+            height: 48px !important;
+          }
+          .ticket-details-card .details-rows {
+            padding-top: 0.5rem !important;
+          }
+          .ticket-details-card .details-rows > div > div {
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+          }
+          .entry-recorded-banner {
+            height: 56px !important;
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            margin-bottom: 0.5rem !important;
+            margin-top: 0 !important;
+          }
+          .entry-recorded-banner .secure-icon {
+            width: 32px !important;
+            height: 32px !important;
+          }
+          .entry-recorded-banner .secure-icon svg {
+            width: 18px !important;
+            height: 18px !important;
+          }
+          .entry-recorded-banner h4 {
+            font-size: 13px !important;
+          }
+          .entry-recorded-banner p {
+            font-size: 11px !important;
+          }
+          .after-scan-buttons {
+            gap: 0.5rem !important;
+          }
+          .after-scan-buttons button {
+            height: 38px !important;
+            font-size: 16px !important;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .after-scan-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+          }
+          .ticket-details-card {
+            padding: 0.75rem 1rem !important;
+          }
+          .entry-recorded-banner {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+          }
         }
         
         @media (min-width: 768px) and (max-height: 900px) {
